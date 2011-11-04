@@ -52,7 +52,7 @@
     // does not match internationalized domain names with non-ASCII characters
     NSString* tld_match = @"(aero|asia|arpa|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx|[a-z][a-z])";
     
-    while (externalHost = [enumerator nextObject])
+    while ((externalHost = [enumerator nextObject]))
     {
         NSString* regex = [[externalHost copy] autorelease];
         
@@ -112,7 +112,7 @@
     
     // if the url host IS found in the whitelist, load it in the app (however UIWebViewNavigationTypeOther kicks it out to Safari)
     // if the url host IS NOT found in the whitelist, we do nothing
-    while (regex = [enumerator nextObject])
+    while ((regex = [enumerator nextObject]))
     {
         NSPredicate* regex_test = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
         

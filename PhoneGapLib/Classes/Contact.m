@@ -9,7 +9,6 @@
 
 #import <Contact.h>
 #import <Categories.h>
-#import <PhoneGapDelegate.h>
 
 #define DATE_OR_NULL(dateObj) ( (aDate != nil) ? (id)([aDate descriptionWithLocale: [NSLocale currentLocale]]) : (id)([NSNull null]) )
 #define IS_VALID_VALUE(value) ((value != nil) && (![value isKindOfClass: [NSNull class]]))

@@ -7,11 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+@class PGWhitelist;
 
 @interface PGURLProtocol : NSURLProtocol {
 }
 
-+ (void) registerPGHttpURLProtocol;
++ (void) registerPGHttpURLProtocolWithWhitelist:(PGWhitelist *)whitelist;
 
 @end
 

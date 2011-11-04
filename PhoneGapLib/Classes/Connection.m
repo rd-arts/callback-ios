@@ -100,9 +100,9 @@
     [self updateReachability:self.internetReach];
 }
 
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView
+- (PGPlugin*) initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView
 {
-    self = (PGConnection*)[super initWithWebView:theWebView];
+    self = (PGConnection*)[super initWithViewController:viewController webView:theWebView];
     if (self) {
         self.connectionType = @"none";
         [self prepare];

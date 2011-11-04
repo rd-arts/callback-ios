@@ -10,24 +10,34 @@
 
 
 #import "PGPlugin.h"
-#import "PhoneGapDelegate.h"
+#import "PhoneGapViewController.h"
+
+
+// class extension
+@interface PGPlugin ()
+
+// readwrite access for self
+@property (nonatomic, retain, readwrite) PhoneGapViewController* viewController;
+
+@end
 
 
 @implementation PGPlugin
+@synthesize viewController = _viewController;
 @synthesize webView;
 @synthesize settings;
 
 
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView settings:(NSDictionary*)classSettings
+- (PGPlugin*) initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView settings:(NSDictionary*)classSettings
 {
-    self = [self initWithWebView:theWebView];
+    self = [self initWithViewController:viewController webView:theWebView];
     if (self) {
         self.settings = classSettings;
 	}
     return self;
 }
 
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView
+- (PGPlugin*) initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView
 {
     self = [super init];
     if (self) {
@@ -36,6 +46,7 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenURL:) name:PGPluginHandleOpenURLNotification object:nil];
         
 		self.webView = theWebView;
+		self.viewController = viewController;
 		
 		// You can listen to more app notifications, see:
 		// http://developer.apple.com/library/ios/#DOCUMENTATION/UIKit/Reference/UIApplication_Class/Reference/Reference.html#//apple_ref/doc/uid/TP40006728-CH3-DontLinkElementID_4
@@ -123,16 +134,6 @@
 	 [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 	 */
     [super dealloc];
-}
-
-- (PhoneGapDelegate*) appDelegate
-{
-	return (PhoneGapDelegate*)[[UIApplication sharedApplication] delegate];
-}
-
-- (UIViewController*) appViewController
-{
-	return (UIViewController*)[self appDelegate].viewController;
 }
 
 - (NSString*) writeJavascript:(NSString*)javascript

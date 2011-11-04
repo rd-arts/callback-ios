@@ -8,18 +8,21 @@
 
 #import "PGURLProtocol.h"
 #import "PGWhitelist.h"
-#import  "PhoneGapDelegate.h"
 
 static PGWhitelist* gWhitelist = nil;
 
 @implementation PGURLProtocol
 
 // Called before any use of the protocol, ensure it is only called once
-+ (void) registerPGHttpURLProtocol {
++ (void) registerPGHttpURLProtocolWithWhitelist:(PGWhitelist *)whitelist {
     static BOOL registered = NO;
     if (!registered) {
         [NSURLProtocol registerClass:[PGURLProtocol class]];
         registered = YES;
+        
+        if (gWhitelist == nil) {
+            gWhitelist = [whitelist retain];
+        }
     }
 }
 
@@ -27,11 +30,6 @@ static PGWhitelist* gWhitelist = nil;
 {
     NSURL* theUrl = [theRequest URL];
     NSString* theScheme = [theUrl scheme];
-    
-    if (gWhitelist == nil) {
-        PhoneGapDelegate* delegate = (PhoneGapDelegate*)[[UIApplication sharedApplication] delegate];
-        gWhitelist = [delegate.whitelist retain];
-    }
     
     // we only care about http and https connections
 	if ([gWhitelist schemeIsAllowed:theScheme])

@@ -8,7 +8,7 @@
 
 #import "Capture.h"
 #import "JSONKit.h"
-#import "PhoneGapDelegate.h"
+#import "PhoneGapViewController.h"
 
 #define kW3CMediaFormatHeight @"height"
 #define kW3CMediaFormatWidth @"width"
@@ -52,9 +52,9 @@
 @implementation PGCapture
 @synthesize inUse;
 
--(id)initWithWebView:(UIWebView *)theWebView
+- (PGPlugin*) initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView
 {
-	self = (PGCapture*)[super initWithWebView:theWebView];
+	self = (PGCapture*)[super initWithViewController:viewController webView:theWebView];
 	if(self)
 	{
         self.inUse = NO;
@@ -84,7 +84,7 @@
         UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:audioViewController] autorelease];
         self.inUse = YES;
         
-        [self.appViewController presentModalViewController:navController animated: YES];
+        [self.viewController presentModalViewController:navController animated: YES];
     }
         
     if (result) {
@@ -129,7 +129,7 @@
         pickerController.callbackId = callbackId;
         pickerController.mimeType = mode;
 	
-        [[super appViewController] presentModalViewController:pickerController animated:YES];
+        [[super viewController] presentModalViewController:pickerController animated:YES];
     }
 
 }
@@ -244,7 +244,7 @@
         // PGImagePicker specific property
         pickerController.callbackId = callbackId;
         
-        [[super appViewController] presentModalViewController:pickerController animated:YES];
+        [[super viewController] presentModalViewController:pickerController animated:YES];
     }
     
 }
@@ -338,7 +338,7 @@
     
     if (!mimeType){
         // try to determine mime type if not provided
-        PGFile* pgFile = [[self appDelegate] getCommandInstance: @"com.phonegap.file"];
+        PGFile* pgFile = [[self viewController] getCommandInstance: @"com.phonegap.file"];
         mimeType = [pgFile getMimeTypeFromPath:fullPath];
         if (!mimeType) {
             // can't do much without mimeType, return error
@@ -421,7 +421,7 @@
     [fileDict setObject: fullPath forKey:@"fullPath"];
     // determine type
     if(!type) {
-    PGFile* pgFile = [[self appDelegate] getCommandInstance: @"com.phonegap.file"];
+    PGFile* pgFile = [[self viewController] getCommandInstance: @"com.phonegap.file"];
     NSString* mimeType = [pgFile getMimeTypeFromPath:fullPath];
     [fileDict setObject: (mimeType != nil ? (NSObject*)mimeType : [NSNull null]) forKey:@"type"];
     }
@@ -755,7 +755,9 @@
 - (void) dismissAudioView: (id) sender
 {
     // called when done button pressed or when error condition to do cleanup and remove view
-    [self.captureCommand.appViewController.modalViewController dismissModalViewControllerAnimated:YES];
+    UIViewController* viewController = (UIViewController* )self.captureCommand.viewController;
+    [viewController.modalViewController dismissModalViewControllerAnimated:YES];
+    
     if (!self.resultString) {
         // return error
         PluginResult* result = [PluginResult resultWithStatus:PGCommandStatus_OK messageToErrorObject:self.errorCode];

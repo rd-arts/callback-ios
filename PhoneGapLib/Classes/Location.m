@@ -8,7 +8,6 @@
 
 #import "Location.h"
 #import "PhoneGapViewController.h"
-#import "PhoneGapDelegate.h"
 
 #pragma mark Constants
 
@@ -76,9 +75,9 @@
 
 @synthesize locationManager, headingData;
 
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView
+- (PGPlugin*) initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView
 {
-    self = (PGLocation*)[super initWithWebView:(UIWebView*)theWebView];
+    self = (PGLocation*)[super initWithViewController:viewController webView:theWebView];
     if (self) 
 	{
         self.locationManager = [[[CLLocationManager alloc] init] autorelease];
@@ -358,8 +357,7 @@
     if ([self.locationManager respondsToSelector: @selector(headingOrientation)]) {
         UIDeviceOrientation currentOrientation = [[UIDevice currentDevice] orientation];
         if (currentOrientation != UIDeviceOrientationUnknown) {
-            PhoneGapDelegate* pgDelegate = [self appDelegate];
-            PhoneGapViewController* pgViewController = pgDelegate.viewController;
+            PhoneGapViewController* pgViewController = [self viewController];
             
             if ([[pgViewController supportedOrientations] containsObject:
                  [NSNumber numberWithInt:currentOrientation]]) {

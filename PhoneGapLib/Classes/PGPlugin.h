@@ -19,16 +19,18 @@
 callerFileName:__FILE__ callerFunctionName:__PRETTY_FUNCTION__]) { return; }
 
 
-@class PhoneGapDelegate;
+@class PhoneGapViewController;
 
 @interface PGPlugin : NSObject {
+    PhoneGapViewController* _viewController;
 }
 
+@property (nonatomic, retain, readonly) PhoneGapViewController* viewController;
 @property (nonatomic, retain) UIWebView *webView;
 @property (nonatomic, retain) NSDictionary *settings;
 
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView settings:(NSDictionary*)classSettings;
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView;
+- (PGPlugin*) initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView settings:(NSDictionary*)classSettings;
+- (PGPlugin*) initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView;
 
 - (void) handleOpenURL:(NSNotification*)notification;
 - (void) onAppTerminate;
@@ -41,9 +43,6 @@ callerFileName:__FILE__ callerFunctionName:__PRETTY_FUNCTION__]) { return; }
  - (void) onOrientationWillChange {}
  - (void) onOrientationDidChange {}
  */
-
-- (PhoneGapDelegate*) appDelegate;
-- (UIViewController*) appViewController;
 
 - (NSString*) writeJavascript:(NSString*)javascript;
 - (NSString*) success:(PluginResult*)pluginResult callbackId:(NSString*)callbackId;

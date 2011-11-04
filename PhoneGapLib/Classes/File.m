@@ -20,9 +20,9 @@
 
 
 
--(id)initWithWebView:(UIWebView *)theWebView
+-(id)initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView
 {
-	self = (PGFile*)[super initWithWebView:theWebView];
+	self = (PGFile*)[super initWithViewController:viewController webView:theWebView];
 	if(self)
 	{
 		// get the documents directory path

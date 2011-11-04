@@ -11,7 +11,6 @@
 #import "Camera.h"
 #import "NSData+Base64.h"
 #import "Categories.h"
-#import "PhonegapDelegate.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 
 @implementation PGCamera
@@ -97,8 +96,7 @@
         }
         else 
         { 
-            [[super appViewController] 
-             presentModalViewController:self.pickerController animated:YES]; 
+            [[super viewController] presentModalViewController:self.pickerController animated:YES];
         }
     }
 }

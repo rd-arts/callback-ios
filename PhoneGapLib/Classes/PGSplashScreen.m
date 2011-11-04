@@ -7,20 +7,22 @@
 
 
 #import "PGSplashScreen.h"
-#import "PhoneGapDelegate.h"
+//#import "PhoneGapDelegate.h"
 
 @implementation PGSplashScreen
 
 
 - (void) __show:(BOOL)show
 {
-	PhoneGapDelegate* delegate = [super appDelegate];
-	if (!delegate.imageView) {
-		return;
-	}
+    // TODO:
 	
-	delegate.imageView.hidden = !show;
-	delegate.activityView.hidden = !show;
+//	PhoneGapDelegate* delegate = [super appDelegate];
+//	if (!delegate.imageView) {
+//		return;
+//	}
+//	
+//	delegate.imageView.hidden = !show;
+//	delegate.activityView.hidden = !show;
 }
 
 - (void) show:(NSArray*)arguments withDict:(NSMutableDictionary*)options

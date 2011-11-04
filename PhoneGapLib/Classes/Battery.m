@@ -124,9 +124,9 @@
 	
 }
 
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView
+- (PGPlugin*) initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView
 {
-    self = (PGBattery*)[super initWithWebView:theWebView];
+    self = (PGBattery*)[super initWithViewController:viewController webView:theWebView];
     if (self) {
 		self.state = UIDeviceBatteryStateUnknown;
         self.level = -1.0;

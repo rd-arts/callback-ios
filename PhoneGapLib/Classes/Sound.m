@@ -7,7 +7,7 @@
 
 
 #import "Sound.h"
-#import "PhonegapDelegate.h"
+#import "PhoneGapViewController.h"
 
 #define DOCUMENTS_SCHEME_PREFIX		@"documents://"
 #define HTTP_SCHEME_PREFIX			@"http://"
@@ -48,7 +48,7 @@
 	NSURL* resourceURL = [NSURL fileURLWithPath:resourcePath];
 	
 	// attempt to find file path in www directory
-    NSString* filePath = [PhoneGapDelegate pathForResource:resourcePath];
+    NSString* filePath = [self.viewController pathForResource:resourcePath];
 	
 	if (filePath == nil) {
 		// if it is a http url, use it
@@ -59,7 +59,7 @@
 			NSLog(@"Will use resource '%@' from the documents folder.", resourcePath);
 			resourceURL = [NSURL URLWithString:resourcePath];
 			
-			NSString* recordingPath = [NSString stringWithFormat:@"%@/%@", [PhoneGapDelegate applicationDocumentsDirectory], [resourceURL host]];
+			NSString* recordingPath = [NSString stringWithFormat:@"%@/%@", [PhoneGapViewController applicationDocumentsDirectory], [resourceURL host]];
 			NSLog(@"recordingPath = %@", recordingPath);
 			resourceURL = [NSURL fileURLWithPath:recordingPath];
 		} else { 

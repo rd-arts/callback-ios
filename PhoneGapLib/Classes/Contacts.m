@@ -9,7 +9,6 @@
 
 #import "Contacts.h"
 #import <UIKit/UIKit.h>
-#import "PhoneGapDelegate.h"
 #import "Categories.h"
 #import "Notification.h"
 
@@ -40,9 +39,9 @@
 	[contacts addressBookDirty];
 }*/
 
--(PGPlugin*) initWithWebView:(UIWebView*)theWebView
+- (PGPlugin*) initWithViewController:(PhoneGapViewController* )viewController webView:(UIWebView*)theWebView
 {
-    self = (PGContacts*)[super initWithWebView:(UIWebView*)theWebView];
+    self = (PGContacts*)[super initWithViewController:viewController webView:theWebView];
     /*if (self) {
 		addressBook = ABAddressBookCreate();
 		ABAddressBookRegisterExternalChangeCallback(addressBook, addressBookChanged, self);
@@ -75,8 +74,7 @@
 	npController.callbackId = callbackId;
 
 	UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:npController] autorelease];
-	[[super appViewController] presentModalViewController:navController animated: YES];
- 
+        [[super viewController] presentModalViewController:navController animated: YES];
 }
 
 - (void) newPersonViewController:(ABNewPersonViewController*)newPersonViewController didCompleteWithNewPerson:(ABRecordRef)person
@@ -122,7 +120,7 @@
 
         [navController pushViewController:personController animated:YES];
 
-		[self.appViewController presentModalViewController:navController animated: YES];
+		[self.viewController presentModalViewController:navController animated: YES];
 
 		if (bEdit) {
             // create the editing controller and push it onto the stack
@@ -160,7 +158,7 @@
 	pickerController.selectedId = kABRecordInvalidID;
 	pickerController.allowsEditing = (BOOL)[options existsValue:@"true" forKey:@"allowsEditing"];
 	
-	[[super appViewController] presentModalViewController:pickerController animated: YES];
+	[[super viewController] presentModalViewController:pickerController animated: YES];
 }
 
 - (BOOL) peoplePickerNavigationController:(ABPeoplePickerNavigationController*)peoplePicker 
@@ -462,7 +460,7 @@
     [super viewDidDisappear: animated];
     // I couldn't find the appViewController in the hierarchy of this UIViewController 
     // so using the passed ContactPlugin to access it.
-    [self.contactsPlugin.appViewController dismissModalViewControllerAnimated:NO];
+    [self.contactsPlugin.viewController dismissModalViewControllerAnimated:NO];
     
 }
 -(void) dealloc

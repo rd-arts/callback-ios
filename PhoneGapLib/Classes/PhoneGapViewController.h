@@ -31,11 +31,12 @@
 @property (nonatomic, retain) 	NSArray* supportedOrientations;
 @property (nonatomic, retain)	UIWebView* webView;
 
+@property (nonatomic, readonly, retain) NSMutableDictionary* pluginObjects;
+@property (nonatomic, readonly, retain) NSDictionary* pluginsMap;
+@property (nonatomic, readonly, retain) NSDictionary* settings;
+@property (nonatomic, readonly, retain) PGWhitelist* whitelist;
 
-@property (nonatomic, retain) NSMutableDictionary *pluginObjects;
-@property (nonatomic, retain) NSDictionary *pluginsMap;
-@property (nonatomic, retain) NSDictionary *settings;
-@property (nonatomic, retain) PGWhitelist* whitelist;
+- (id)initWithLocalRoot:(NSString* )localRoot andStartURL:(NSString* )startURL;
 
 - (NSString*) pathForResource:(NSString*)resourcepath;
 
@@ -53,8 +54,6 @@
 - (NSDictionary*) deviceProperties;
 
 - (NSString *)stringByEvaluatingJavaScriptFromString:(NSString *)javascript;
-
-- (void)urlWillBeLoaded:(NSURL* )url;
 
 @end
 

@@ -27,10 +27,18 @@
 // class extension
 @interface PhoneGapViewController ()
 
+- (NSArray*) parseInterfaceOrientations:(NSArray*)orientations;
+
 // readwrite access for self
 
 @property (readwrite, assign) BOOL loadFromString;
 @property (nonatomic, readwrite, retain) NSString *sessionKey; 
+
+@property (nonatomic, readwrite, retain) NSMutableDictionary* pluginObjects;
+@property (nonatomic, readwrite, retain) NSDictionary* pluginsMap;
+@property (nonatomic, readwrite, retain) NSDictionary* settings;
+@property (nonatomic, readwrite, retain) PGWhitelist* whitelist;
+
 
 @end
 
@@ -43,10 +51,11 @@
 @synthesize supportedOrientations, pluginObjects, pluginsMap, settings, whitelist;
 @synthesize sessionKey, loadFromString;
 
-- (id) init {
+- (id)init {
     self = [super init];
     
     if (self != nil) {
+        
         self.pluginObjects = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
         
         // Turn on cookie support ( shared with our app only! )
@@ -60,15 +69,101 @@
         // read from PhoneGap.plist in the app bundle
         NSString* appPlistName = @"PhoneGap";
         NSDictionary* phonegapPlist = [[self class] getBundlePlist:appPlistName];
+        if (!phonegapPlist) {
+            NSLog(@"WARNING: %@.plist is missing.", appPlistName);
+            return nil;
+        }
         self.settings = [[[NSDictionary alloc] initWithDictionary:phonegapPlist] autorelease];        
         
         // set the whitelist
         self.whitelist = [[[PGWhitelist alloc] initWithArray:[self.settings objectForKey:@"ExternalHosts"]] autorelease];
         
         [PGURLProtocol registerPGHttpURLProtocolWithWhitelist:self.whitelist];
+        
+        // read from UISupportedInterfaceOrientations (or UISupportedInterfaceOrientations~iPad, if its iPad) from -Info.plist
+        self.supportedOrientations = [self parseInterfaceOrientations:
+                                      [[[NSBundle mainBundle] infoDictionary] objectForKey:@"UISupportedInterfaceOrientations"]];
+        
+        // read from Plugins dict in PhoneGap.plist in the app bundle
+        NSString* pluginsKey = @"Plugins";
+        NSDictionary* pluginsDict = [self.settings objectForKey:pluginsKey];
+        if (pluginsDict == nil) {
+            NSLog(@"WARNING: %@ key in %@.plist is missing! PhoneGap will not work, you need to have this key.", pluginsKey, appPlistName);
+            return nil;
+        }        
+        self.pluginsMap = [pluginsDict dictionaryWithLowercaseKeys];
+        
+        // The first item in the supportedOrientations array is the start orientation (guaranteed to be at least Portrait)
+        [[UIApplication sharedApplication] setStatusBarOrientation:[[supportedOrientations objectAtIndex:0] intValue]];
+        
+        
+        // The first item in the supportedOrientations array is the start orientation (guaranteed to be at least Portrait)
+        [[UIApplication sharedApplication] setStatusBarOrientation:[[supportedOrientations objectAtIndex:0] intValue]];
+        
+        self.view.autoresizesSubviews = YES;
+        
+        if (self.webView == nil) {
+            self.webView = [[ [ UIWebView alloc ] initWithFrame:self.view.bounds] autorelease];
+        }
+        self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        
+        NSString *enableViewportScale  = [self.settings objectForKey:@"EnableViewportScale"];
+        self.webView.scalesPageToFit = [enableViewportScale boolValue];
+        
+        [self.view addSubview:self.webView];
+        self.webView.delegate = self;
+        
+        /*
+         * Fire up the GPS Service right away as it takes a moment for data to come back.
+         */
+        NSNumber *enableLocation       = [self.settings objectForKey:@"EnableLocation"];
+        if ([enableLocation boolValue]) {
+            [[self getCommandInstance:@"com.phonegap.geolocation"] startLocation:nil withDict:nil];
+        }    
+        
+        /*
+         * webView
+         * This is where we define the inital instance of the browser (WebKit) and give it a starting url/file.
+         */
+        
+        NSString* startPage = self.startURL;//[self startPage];
+        NSURL *appURL = [NSURL URLWithString:startPage];
+        NSString* loadErr = nil;
+        
+        if(![appURL scheme])
+        {
+            NSString* startFilePath = [self pathForResource:startPage];
+            if (startFilePath == nil)
+            {
+                loadErr = [NSString stringWithFormat:@"ERROR: Start Page at '%@/%@' was not found.", self.localRoot/*[self wwwFolderName]*/, startPage];
+                NSLog(@"%@", loadErr);
+                appURL = nil;
+            }
+            else {
+                appURL = [NSURL fileURLWithPath:startFilePath];
+            }
+        }
+        
+        if (!loadErr) {
+            NSURLRequest *appReq = [NSURLRequest requestWithURL:appURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20.0];
+            [self.webView loadRequest:appReq];    
+        } else {
+            NSString* html = [NSString stringWithFormat:@"<html><body> %@ </body></html>", loadErr];
+            [self.webView loadHTMLString:html baseURL:nil];
+            self.loadFromString = YES;
+        }        
+        
     }
     return self; 
     
+}
+
+
+- (id)initWithLocalRoot:(NSString* )localRoot andStartURL:(NSString* )startURL {
+    self.localRoot = localRoot;
+    self.startURL = startURL;
+    
+    return [self init];
 }
 
 - (NSString*) pathForResource:(NSString*)resourcepath {
@@ -204,84 +299,6 @@ static NSString *gapVersion;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // read from UISupportedInterfaceOrientations (or UISupportedInterfaceOrientations~iPad, if its iPad) from -Info.plist
-    self.supportedOrientations = [self parseInterfaceOrientations:
-                                  [[[NSBundle mainBundle] infoDictionary] objectForKey:@"UISupportedInterfaceOrientations"]];
-    
-    // read from Plugins dict in PhoneGap.plist in the app bundle
-    NSDictionary* pluginsDict = [self.settings objectForKey:@"Plugins"];
-    self.pluginsMap = [pluginsDict dictionaryWithLowercaseKeys];
-    
-    // The first item in the supportedOrientations array is the start orientation (guaranteed to be at least Portrait)
-    [[UIApplication sharedApplication] setStatusBarOrientation:[[supportedOrientations objectAtIndex:0] intValue]];
-    
-    
-    // The first item in the supportedOrientations array is the start orientation (guaranteed to be at least Portrait)
-    [[UIApplication sharedApplication] setStatusBarOrientation:[[supportedOrientations objectAtIndex:0] intValue]];
-    
-    self.view.autoresizesSubviews = YES;
-    
-    if (self.webView == nil) {
-        self.webView = [[ [ UIWebView alloc ] initWithFrame:self.view.bounds] autorelease];
-    }
-    self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    
-    NSString *enableViewportScale  = [self.settings objectForKey:@"EnableViewportScale"];
-    self.webView.scalesPageToFit = [enableViewportScale boolValue];
-    
-    [self.view addSubview:self.webView];
-    self.webView.delegate = self;
-    
-    /*
-     * Fire up the GPS Service right away as it takes a moment for data to come back.
-     */
-    NSNumber *enableLocation       = [self.settings objectForKey:@"EnableLocation"];
-    if ([enableLocation boolValue]) {
-        [[self getCommandInstance:@"com.phonegap.geolocation"] startLocation:nil withDict:nil];
-    }
-}
-
-- (void)urlWillBeLoaded:(NSURL* )url {
-    // url will be loaded right now, you can override this method to change url before loading
-    
-    NSURLRequest *appReq = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20.0];
-    [self.webView loadRequest:appReq];    
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    /*
-     * webView
-     * This is where we define the inital instance of the browser (WebKit) and give it a starting url/file.
-     */
-    
-    NSString* startPage = self.startURL;//[self startPage];
-    NSURL *appURL = [NSURL URLWithString:startPage];
-    NSString* loadErr = nil;
-    
-    if(![appURL scheme])
-    {
-        NSString* startFilePath = [self pathForResource:startPage];
-        if (startFilePath == nil)
-        {
-            loadErr = [NSString stringWithFormat:@"ERROR: Start Page at '%@/%@' was not found.", self.localRoot/*[self wwwFolderName]*/, startPage];
-            NSLog(@"%@", loadErr);
-            appURL = nil;
-        }
-        else {
-            appURL = [NSURL fileURLWithPath:startFilePath];
-        }
-    }
-    
-    if (!loadErr) {
-        [self urlWillBeLoaded:appURL];
-    } else {
-        NSString* html = [NSString stringWithFormat:@"<html><body> %@ </body></html>", loadErr];
-        [self.webView loadHTMLString:html baseURL:nil];
-        self.loadFromString = YES;
-    }        
 }
 
 - (NSDictionary*) deviceProperties {

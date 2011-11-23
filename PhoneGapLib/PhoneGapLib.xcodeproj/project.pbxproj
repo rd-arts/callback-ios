@@ -150,10 +150,7 @@
 		8887FDA01090FBE7009987E8 /* Sound.m in Sources */ = {isa = PBXBuildFile; fileRef = 8887FD611090FBE7009987E8 /* Sound.m */; };
 		88BA573D109BB46F00FB5E78 /* Accelerometer.h in Headers */ = {isa = PBXBuildFile; fileRef = 88BA573B109BB46F00FB5E78 /* Accelerometer.h */; };
 		88BA573E109BB46F00FB5E78 /* Accelerometer.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BA573C109BB46F00FB5E78 /* Accelerometer.m */; };
-		BE37ED341469ADEF00405315 /* PGPushNotification.h in Headers */ = {isa = PBXBuildFile; fileRef = BE37ED321469ADEF00405315 /* PGPushNotification.h */; };
-		BE37ED351469ADEF00405315 /* PGPushNotification.h in Headers */ = {isa = PBXBuildFile; fileRef = BE37ED321469ADEF00405315 /* PGPushNotification.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BE37ED361469ADEF00405315 /* PGPushNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = BE37ED331469ADEF00405315 /* PGPushNotification.m */; };
-		BE37ED371469ADEF00405315 /* PGPushNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = BE37ED331469ADEF00405315 /* PGPushNotification.m */; };
+		BE3B3642147CCE0D00EFB91E /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE3B3641147CCE0C00EFB91E /* EventKit.framework */; };
 		C937A4561337599E002C4C79 /* FileTransfer.h in Headers */ = {isa = PBXBuildFile; fileRef = C937A4541337599E002C4C79 /* FileTransfer.h */; };
 		C937A4571337599E002C4C79 /* FileTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = C937A4551337599E002C4C79 /* FileTransfer.m */; };
 /* End PBXBuildFile section */
@@ -249,8 +246,7 @@
 		88BA573B109BB46F00FB5E78 /* Accelerometer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Accelerometer.h; path = Classes/Accelerometer.h; sourceTree = "<group>"; };
 		88BA573C109BB46F00FB5E78 /* Accelerometer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Accelerometer.m; path = Classes/Accelerometer.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* PhoneGapLib_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneGapLib_Prefix.pch; sourceTree = SOURCE_ROOT; };
-		BE37ED321469ADEF00405315 /* PGPushNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PGPushNotification.h; path = Classes/PGPushNotification.h; sourceTree = "<group>"; };
-		BE37ED331469ADEF00405315 /* PGPushNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PGPushNotification.m; path = Classes/PGPushNotification.m; sourceTree = "<group>"; };
+		BE3B3641147CCE0C00EFB91E /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		C937A4541337599E002C4C79 /* FileTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileTransfer.h; path = Classes/FileTransfer.h; sourceTree = "<group>"; };
 		C937A4551337599E002C4C79 /* FileTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileTransfer.m; path = Classes/FileTransfer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -267,6 +263,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE3B3642147CCE0D00EFB91E /* EventKit.framework in Frameworks */,
 				68A32D7514103017006B237C /* AddressBook.framework in Frameworks */,
 				68A32D7214102E67006B237C /* libPhoneGap.a in Frameworks */,
 				68A32D7614103078006B237C /* CoreMedia.framework in Frameworks */,
@@ -318,6 +315,7 @@
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BE3B3641147CCE0C00EFB91E /* EventKit.framework */,
 				68A32D7414103017006B237C /* AddressBook.framework */,
 				686357DC14100B1600DF4CF2 /* CoreMedia.framework */,
 				686357CE14100ADA00DF4CF2 /* AudioToolbox.framework */,
@@ -424,8 +422,6 @@
 		888700D810922FD3009987E8 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				BE37ED321469ADEF00405315 /* PGPushNotification.h */,
-				BE37ED331469ADEF00405315 /* PGPushNotification.m */,
 			);
 			name = Plugins;
 			sourceTree = "<group>";
@@ -498,7 +494,6 @@
 				30C684811406CB38004C1A8E /* PGWhitelist.h in Headers */,
 				30B39EC013D0268B0009682A /* PGSplashScreen.h in Headers */,
 				30E563D113E217EC00C949AA /* NSMutableArray+QueueAdditions.h in Headers */,
-				BE37ED351469ADEF00405315 /* PGPushNotification.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -535,7 +530,6 @@
 				30C684941407044B004C1A8E /* PGURLProtocol.h in Headers */,
 				30356214141049E1006C2D43 /* PGWhitelistTests.h in Headers */,
 				30A90B9114588697006178D3 /* JSONKit.h in Headers */,
-				BE37ED341469ADEF00405315 /* PGPushNotification.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -743,7 +737,6 @@
 				30C684831406CB38004C1A8E /* PGWhitelist.m in Sources */,
 				30C684971407044B004C1A8E /* PGURLProtocol.m in Sources */,
 				30A90B9414588697006178D3 /* JSONKit.m in Sources */,
-				BE37ED371469ADEF00405315 /* PGPushNotification.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -789,7 +782,6 @@
 				30C684821406CB38004C1A8E /* PGWhitelist.m in Sources */,
 				30C684961407044B004C1A8E /* PGURLProtocol.m in Sources */,
 				30A90B9314588697006178D3 /* JSONKit.m in Sources */,
-				BE37ED361469ADEF00405315 /* PGPushNotification.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

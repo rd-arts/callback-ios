@@ -28,6 +28,11 @@ static PGWhitelist* gWhitelist = nil;
 
 + (BOOL) canInitWithRequest:(NSURLRequest *)theRequest
 {
+    NSURLRequest* request = [self propertyForKey:@"InternalRequest" inRequest:theRequest];
+    if (request) {
+        return YES;
+    }
+    
     NSURL* theUrl = [theRequest URL];
     NSString* theScheme = [theUrl scheme];
     
